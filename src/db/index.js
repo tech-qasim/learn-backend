@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-console.log("qasim: ", process.env.MONGODB_URI);
-
 const connectDB = async () => {
   try {
     const connectionInstance = await mongoose.connect(process.env.MONGODB_URI);
