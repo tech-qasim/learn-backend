@@ -68,4 +68,59 @@ const registerUser = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, createdUser, "User created successfully"));
 });
 
+
+const generateAccessTokenAndRefreshTokens = async(userId)=>{
+  try  
+  {
+    const user = await User.findById(userId)
+    const accessToken = user.generateAccessToken ()
+    const refreshToken = user.generateRefreshToken ()
+
+
+    user.refreshToken = refreshToken; 
+    await user.save({validateBeforeSave: false})
+
+    return {accessToken, refreshToken}
+  } catch (e){
+    throw new ApiError(500, 'Something went wrong while generating refrest and access token')
+  }
+}
+
+const loginUser = asyncHandler(async (req,res)=>{
+  //req body -> data 
+  // username or email 
+  // find the user 
+  // password check
+  //access and refresh token 
+  //send cookie 
+
+  const { email, username, password } = req.body
+  if (!username || !email){
+    throw new ApiError(400, 'username or email is required')
+  }
+
+  const user = User.findOne({
+    $or: [{username}, {email}]
+  })
+
+  if (!user){
+    throw new ApiError(404, 'User does not exist')
+  }
+
+
+  const isPasswordCorrect = await user.isPasswordCorrect(password)
+
+  if (!isPasswordCorrect){
+    throw new ApiError(401, 'Invalid user credentials')
+  }
+
+  const {accessToken, refreshToken} = await  generateAccessTokenAndRefreshTokens(user._id)
+
+  const loggedInUser = User.findById(user._id)
+
+
+  
+
+})
+
 export { registerUser };
