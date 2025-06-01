@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodeman": "^1.1.2"
+    "eslint": "^9.27.0",
+    "nodemon": "^1.1.2"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
