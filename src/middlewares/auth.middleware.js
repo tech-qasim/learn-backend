@@ -1,7 +1,7 @@
-import { ApiError } from "../util/ApiError";
-import { asyncHandler } from "../util/asyncHandler";
+import { ApiError } from "../util/ApiError.js";
+import { asyncHandler } from "../util/asyncHandler.js";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 
 export const verifyJWT = asyncHandler(async (req, _, next) => {
   try {
@@ -20,7 +20,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
     );
 
     if (!user) {
-      throw new ApiError(401, "Unauthorized request");
+      throw new ApiError(401, "Unauthorized request (user not found)");
     }
 
     req.user = user;
