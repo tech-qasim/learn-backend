@@ -327,6 +327,42 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "cover image updated successfully"));
 });
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // current page
+  const limit = parseInt(req.query.limit) || 10;
+
+  const skip = (page - 1) * limit;
+
+  const users = await User.find()
+    .skip(skip)
+    .select("-password -refreshToken")
+    .limit(limit);
+  const total = await User.countDocuments();
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        limit,
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        data: users,
+      },
+      "All users fetched successfully"
+    )
+    // limit,
+    // currentPage: page,
+    // totalPages: Math.ceil(total / limit),
+    // totalItems: total,
+    // data: users,
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, users, "All users fetched successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -337,4 +373,5 @@ export {
   updateAccountDetails,
   updateUserAvatar,
   updateCoverImage,
+  getAllUsers,
 };
